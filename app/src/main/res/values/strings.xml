@@ -1,0 +1,9 @@
+<!--
+  ~ Copyright (c) 2017. Xi'an iRain IOT Technology service CO., Ltd (ShenZhen). All Rights Reserved.
+  -->
+
+<resources>
+    <string name="app_name">GroupRecyclerAdapter</string>
+    <string name="memo">备注:</string>
+    <string name="name">姓名:</string>
+</resources>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017. Xi'an iRain IOT Technology service CO., Ltd (ShenZhen). All Rights Reserved.
+  -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:padding="16dp">
+    <TextView
+        android:id="@+id/name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:gravity="center_vertical"
+        android:text="@string/name"
+        android:textColor="#666"
+        android:textSize="15sp"/>
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/name_label"
+        android:gravity="center_vertical"
+        android:textColor="#666"
+        android:textSize="15sp"
+        tools:text="张三"/>
+    <TextView
+        android:id="@+id/memo_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name_label"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:text="@string/memo"
+        android:textColor="#666"
+        android:textSize="15sp"/>
+    <TextView
+        android:id="@+id/memo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name_label"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@id/memo_label"
+        android:gravity="center_vertical"
+        android:textColor="#666"
+        android:textSize="15sp"
+        tools:text="备注内容"/>
+</RelativeLayout>
