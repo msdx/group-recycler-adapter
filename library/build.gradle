@@ -34,4 +34,6 @@ dependencies {
     })
 }
 
-apply from: 'bintray.gradle'
+if (hasProperty('BINTRAY_USER')) {
+    apply from: 'bintray.gradle'
+}

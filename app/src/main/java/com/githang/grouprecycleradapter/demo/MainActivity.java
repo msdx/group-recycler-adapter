@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < 5; i++) {
             List<Member> members = new ArrayList<>();
             String teamName = Character.toString((char) ((int) ('A') + i)) + "队";
-            for (int j = 0; j < 4; j++) {
+            for (int j = 0; j < 2; j++) {
                 members.add(new Member("姓名" + j, teamName + j));
             }
             teams.add(new Team(teamName, members));
