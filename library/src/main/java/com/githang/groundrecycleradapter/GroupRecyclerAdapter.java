@@ -4,6 +4,7 @@
 package com.githang.groundrecycleradapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -16,10 +17,13 @@ import java.util.List;
  * @param <GVH> ViewHolder of the group
  * @param <CVH> ViewHolder of the child
  * @author 黄浩杭 (msdx.android@qq.com)
+ * @version 2018-1-9 0.2
  * @since 2017-04-28 0.1
  */
 public abstract class GroupRecyclerAdapter<G, GVH extends RecyclerView.ViewHolder, CVH extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter {
+
+    private static final int INVALID_POSITION = -1;
 
     private static final int TYPE_GROUP = 1;
     private static final int TYPE_CHILD = 2;
@@ -27,17 +31,62 @@ public abstract class GroupRecyclerAdapter<G, GVH extends RecyclerView.ViewHolde
     private List<G> mGroups;
     private int mItemCount;
 
+    private OnGroupClickListener mOnGroupClickListener;
+    private OnChildClickListener mOnChildClickListener;
+
     public GroupRecyclerAdapter(List<G> groups) {
         mGroups = groups == null ? new ArrayList<G>() : groups;
         updateItemCount();
     }
 
+    public OnGroupClickListener getOnGroupClickListener() {
+        return mOnGroupClickListener;
+    }
+
+    public void setOnGroupClickListener(OnGroupClickListener onGroupClickListener) {
+        mOnGroupClickListener = onGroupClickListener;
+    }
+
+    public OnChildClickListener getOnChildClickListener() {
+        return mOnChildClickListener;
+    }
+
+    public void setOnChildClickListener(OnChildClickListener onChildClickListener) {
+        mOnChildClickListener = onChildClickListener;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_GROUP) {
-            return onCreateGroupViewHolder(parent);
+            final GVH viewHolder = onCreateGroupViewHolder(parent);
+            if (mOnGroupClickListener != null) {
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mOnGroupClickListener != null) {
+                            final int itemPosition = viewHolder.getAdapterPosition();
+                            final int groupPosition = getGroupChildPosition(itemPosition).group;
+                            mOnGroupClickListener.onGroupItemClick(v, groupPosition);
+                        }
+                    }
+                });
+            }
+            return viewHolder;
         } else {
-            return onCreateChildViewHolder(parent);
+            final CVH viewHolder = onCreateChildViewHolder(parent);
+            if (mOnChildClickListener != null) {
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mOnChildClickListener != null) {
+                            final int itemPosition = viewHolder.getAdapterPosition();
+                            final Position position = getGroupChildPosition(itemPosition);
+                            mOnChildClickListener.onChildClick(v, position.group, position.child);
+                        }
+                    }
+                });
+            }
+            return viewHolder;
         }
     }
 
@@ -46,27 +95,36 @@ public abstract class GroupRecyclerAdapter<G, GVH extends RecyclerView.ViewHolde
     protected abstract CVH onCreateChildViewHolder(ViewGroup parent);
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        int itemCount = 0;
-        int groupPosition = 0;
-        int childPosition = 0;
-        int childCount = 0;
-        for (G g : mGroups) {
-            if (position == itemCount) {
-                onBindGroupViewHolder((GVH) holder, groupPosition);
-                return;
-            }
-            itemCount++;
-            childPosition = position - itemCount;
-            childCount = getChildCount(g);
-            if (childPosition < childCount) {
-                onBindChildViewHolder((CVH) holder, groupPosition, childPosition);
-                return;
-            }
-            itemCount += childCount;
-            groupPosition++;
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int itemPosition) {
+        Position position = getGroupChildPosition(itemPosition);
+        if (position.child == -1) {
+            onBindGroupViewHolder((GVH) holder, position.group);
+        } else {
+            onBindChildViewHolder((CVH) holder, position.group, position.child);
         }
     }
+
+    protected Position getGroupChildPosition(int itemPosition) {
+        int itemCount = 0;
+        int childCount;
+        final Position position = new Position();
+        for (G g : mGroups) {
+            if (itemPosition == itemCount) {
+                position.child = INVALID_POSITION;
+                return position;
+            }
+            itemCount++;
+            position.child = itemPosition - itemCount;
+            childCount = getChildCount(g);
+            if (position.child < childCount) {
+                return position;
+            }
+            itemCount += childCount;
+            position.group++;
+        }
+        return position;
+    }
+
 
     protected abstract void onBindGroupViewHolder(GVH holder, int groupPosition);
 
@@ -142,5 +200,10 @@ public abstract class GroupRecyclerAdapter<G, GVH extends RecyclerView.ViewHolde
         GROUP_TITLE,
         FIRST_CHILD,
         NOT_FIRST_CHILD
+    }
+
+    class Position {
+        public int group;
+        public int child = INVALID_POSITION;
     }
 }
