@@ -6,10 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.githang.groundrecycleradapter.GroupItemDecoration;
 import com.githang.groundrecycleradapter.GroupRecyclerAdapter;
+import com.githang.groundrecycleradapter.OnChildClickListener;
+import com.githang.groundrecycleradapter.OnGroupClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        GroupRecyclerAdapter<Team, TeamViewHolder, MemberViewHolder> recyclerAdapter =
+        final GroupRecyclerAdapter<Team, TeamViewHolder, MemberViewHolder> recyclerAdapter =
                 new GroupRecyclerAdapter<Team, TeamViewHolder, MemberViewHolder>(teams) {
                     @Override
                     protected TeamViewHolder onCreateGroupViewHolder(ViewGroup parent) {
@@ -69,5 +73,23 @@ public class MainActivity extends AppCompatActivity {
         decoration.setTitleDivider(ResourcesCompat.getDrawable(getResources(), R.drawable.divider_height_1_px, null));
         decoration.setChildDivider(ResourcesCompat.getDrawable(getResources(), R.drawable.divider_white_header, null));
         recyclerView.addItemDecoration(decoration);
+
+        recyclerAdapter.setOnGroupClickListener(new OnGroupClickListener() {
+            @Override
+            public void onGroupItemClick(View itemView, int groupPosition) {
+                showToast(recyclerAdapter.getGroup(groupPosition).title);
+            }
+        });
+        recyclerAdapter.setOnChildClickListener(new OnChildClickListener() {
+            @Override
+            public void onChildClick(View itemView, int groupPosition, int childPosition) {
+                Team team = recyclerAdapter.getGroup(groupPosition);
+                showToast(team.title + ": " +team.members.get(childPosition).name);
+            }
+        });
+    }
+
+    private void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }
