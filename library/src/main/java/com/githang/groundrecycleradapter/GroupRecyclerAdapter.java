@@ -196,7 +196,7 @@ public abstract class GroupRecyclerAdapter<G, GVH extends RecyclerView.ViewHolde
         throw new IllegalStateException("Could not find item type for item position " + itemPosition);
     }
 
-    enum ItemType {
+    public enum ItemType {
         GROUP_TITLE,
         FIRST_CHILD,
         NOT_FIRST_CHILD
