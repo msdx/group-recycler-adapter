@@ -17,13 +17,13 @@ import java.util.List;
  * @param <GVH> ViewHolder of the group
  * @param <CVH> ViewHolder of the child
  * @author 黄浩杭 (msdx.android@qq.com)
- * @version 2018-1-9 0.2
+ * @version 2018-4-28 0.2.1
  * @since 2017-04-28 0.1
  */
 public abstract class GroupRecyclerAdapter<G, GVH extends RecyclerView.ViewHolder, CVH extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter {
 
-    private static final int INVALID_POSITION = -1;
+    public static final int INVALID_POSITION = -1;
 
     private static final int TYPE_GROUP = 1;
     private static final int TYPE_CHILD = 2;
@@ -104,7 +104,7 @@ public abstract class GroupRecyclerAdapter<G, GVH extends RecyclerView.ViewHolde
         }
     }
 
-    protected Position getGroupChildPosition(int itemPosition) {
+    public Position getGroupChildPosition(int itemPosition) {
         int itemCount = 0;
         int childCount;
         final Position position = new Position();
@@ -202,7 +202,7 @@ public abstract class GroupRecyclerAdapter<G, GVH extends RecyclerView.ViewHolde
         NOT_FIRST_CHILD
     }
 
-    class Position {
+    public static class Position {
         public int group;
         public int child = INVALID_POSITION;
     }
