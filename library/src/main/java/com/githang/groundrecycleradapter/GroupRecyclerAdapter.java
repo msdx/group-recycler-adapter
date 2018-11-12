@@ -97,7 +97,7 @@ public abstract class GroupRecyclerAdapter<G, GVH extends RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int itemPosition) {
         Position position = getGroupChildPosition(itemPosition);
-        if (position.child == -1) {
+        if (position.child == INVALID_POSITION) {
             onBindGroupViewHolder((GVH) holder, position.group);
         } else {
             onBindChildViewHolder((CVH) holder, position.group, position.child);
@@ -114,12 +114,14 @@ public abstract class GroupRecyclerAdapter<G, GVH extends RecyclerView.ViewHolde
                 return position;
             }
             itemCount++;
-            position.child = itemPosition - itemCount;
             childCount = getChildCount(g);
-            if (position.child < childCount) {
-                return position;
+            if (childCount > 0) {
+                position.child = itemPosition - itemCount;
+                if (position.child < childCount) {
+                    return position;
+                }
+                itemCount += childCount;
             }
-            itemCount += childCount;
             position.group++;
         }
         return position;
@@ -180,15 +182,17 @@ public abstract class GroupRecyclerAdapter<G, GVH extends RecyclerView.ViewHolde
 
     public ItemType getItemType(final int itemPosition) {
         int count = 0;
+        int childCount;
         for (G g : mGroups) {
             if (itemPosition == count) {
                 return ItemType.GROUP_TITLE;
             }
+            childCount = getChildCount(g);
             count += 1;
-            if (itemPosition == count) {
+            if (itemPosition == count && childCount != 0) {
                 return ItemType.FIRST_CHILD;
             }
-            count += getChildCount(g);
+            count += childCount;
             if (itemPosition < count) {
                 return ItemType.NOT_FIRST_CHILD;
             }
