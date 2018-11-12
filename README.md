@@ -14,7 +14,7 @@ GroupRecyclerAdapter是用于实现分组数据在RecyclerView中的展示，包
 ## 添加依赖
 
 ```groovy
-compile 'com.githang:group-recycler-adapter:0.2'
+compile 'com.githang:group-recycler-adapter:0.2.2'
 ```
 
 ## Java代码
